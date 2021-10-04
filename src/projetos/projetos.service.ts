@@ -1,25 +1,67 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Projeto, Prisma } from '.prisma/client';
 import { CreateProjetoDto } from './dto/create-projeto.dto';
 
 @Injectable()
 export class ProjetosService {
-  create(createProjetoDto: CreateProjetoDto) {
-    return 'This action adds a new projeto';
+  constructor(private prisma: PrismaService) {}
+
+  async createProjeto(data: CreateProjetoDto) {
+    const colaboradores = data.colaboradores?.map((colaborador) => ({
+      id: colaborador,
+    }));
+
+    return this.prisma.projeto.create({
+      data: {
+        ...data,
+        colaboradores: {
+          connect: colaboradores,
+        },
+      },
+      include: {
+        colaboradores: true,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all projetos`;
+  async findAllProjetos(): Promise<Projeto[]> {
+    return this.prisma.projeto.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} projeto`;
+  async findOneProjeto(projetoId: number): Promise<Projeto> {
+    return this.prisma.projeto.findUnique({
+      where: {
+        id: projetoId,
+      },
+      include: {
+        colaboradores: true,
+      },
+    });
   }
 
-  update(id: number, updateProjetoDto: CreateProjetoDto) {
-    return `This action updates a #${id} projeto`;
+  async updateProjeto(id: number, data: CreateProjetoDto) {
+    const colaboradores = data.colaboradores?.map((colaborador) => ({
+      id: colaborador,
+    }));
+
+    return this.prisma.projeto.update({
+      where: { id },
+      data: {
+        ...data,
+        colaboradores: {
+          connect: colaboradores,
+        },
+      },
+      include: {
+        colaboradores: true,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} projeto`;
+  async removeOneProjeto(
+    where: Prisma.ProjetoWhereUniqueInput,
+  ): Promise<Projeto> {
+    return this.prisma.projeto.delete({ where });
   }
 }

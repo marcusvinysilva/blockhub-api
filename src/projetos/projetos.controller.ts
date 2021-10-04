@@ -3,39 +3,51 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  ValidationPipe,
+  UsePipes,
+  ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { ProjetosService } from './projetos.service';
+import { Projeto } from '.prisma/client';
 import { CreateProjetoDto } from './dto/create-projeto.dto';
 
 @Controller('projetos')
 export class ProjetosController {
-  constructor(private readonly projetosService: ProjetosService) {}
+  constructor(private projetosService: ProjetosService) {}
 
-  @Post()
-  create(@Body() createProjetoDto: CreateProjetoDto) {
-    return this.projetosService.create(createProjetoDto);
+  @Post('/create')
+  @UsePipes(ValidationPipe)
+  async create(@Body() createProjeto: CreateProjetoDto): Promise<Projeto> {
+    return this.projetosService.createProjeto(createProjeto);
   }
 
   @Get()
-  findAll() {
-    return this.projetosService.findAll();
+  @UsePipes(ValidationPipe)
+  async findAll(): Promise<Projeto[]> {
+    return this.projetosService.findAllProjetos();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projetosService.findOne(+id);
+  @Get('/list/:id')
+  @UsePipes(ValidationPipe)
+  async findUnique(@Param('id', ParseIntPipe) id: number): Promise<Projeto> {
+    return this.projetosService.findOneProjeto(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjetoDto: CreateProjetoDto) {
-    return this.projetosService.update(+id, updateProjetoDto);
+  @Put('/update/:id')
+  @UsePipes(ValidationPipe)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProjeto: CreateProjetoDto,
+  ): Promise<Projeto> {
+    return this.projetosService.updateProjeto(id, updateProjeto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projetosService.remove(+id);
+  @Delete('/delete/:id')
+  @UsePipes(ValidationPipe)
+  async delete(@Param('id') id: string) {
+    return this.projetosService.removeOneProjeto({ id: Number(id) });
   }
 }
