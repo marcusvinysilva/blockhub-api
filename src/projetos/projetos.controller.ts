@@ -24,7 +24,7 @@ export class ProjetosController {
     return this.projetosService.createProjeto(createProjeto);
   }
 
-  @Get()
+  @Get('/list')
   @UsePipes(ValidationPipe)
   async findAll(): Promise<Projeto[]> {
     return this.projetosService.findAllProjetos();
