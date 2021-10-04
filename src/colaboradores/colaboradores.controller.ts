@@ -26,7 +26,7 @@ export class ColaboradoresController {
     return this.colaboradoresService.createColaborador(createColaborador);
   }
 
-  @Get()
+  @Get('/list')
   @UsePipes(ValidationPipe)
   async findAll(): Promise<Colaborador[]> {
     return this.colaboradoresService.findAllColaboradores();
