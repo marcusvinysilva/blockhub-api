@@ -1,25 +1,67 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Colaborador, Prisma } from '.prisma/client';
 import { CreateColaboradorDto } from './dto/create-colaborador.dto';
 
 @Injectable()
 export class ColaboradoresService {
-  create(createColaboradorDto: CreateColaboradorDto) {
-    return 'This action adds a new colaborador';
+  constructor(private prisma: PrismaService) {}
+
+  async createColaborador(data: CreateColaboradorDto) {
+    const projetos = data.projetos?.map((projeto) => ({
+      id: projeto,
+    }));
+
+    return this.prisma.colaborador.create({
+      data: {
+        ...data,
+        projetos: {
+          connect: projetos,
+        },
+      },
+      include: {
+        projetos: true,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all colaboradores`;
+  async findAllColaboradores(): Promise<Colaborador[]> {
+    return this.prisma.colaborador.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} colaborador`;
+  async findOneColaborador(colaboradorId: number): Promise<Colaborador> {
+    return this.prisma.colaborador.findUnique({
+      where: {
+        id: colaboradorId,
+      },
+      include: {
+        projetos: true,
+      },
+    });
   }
 
-  update(id: number, updateColaboradorDto: CreateColaboradorDto) {
-    return `This action updates a #${id} colaborador`;
+  async updateColaborador(id: number, data: CreateColaboradorDto) {
+    const projetos = data.projetos?.map((projeto) => ({
+      id: projeto,
+    }));
+
+    return this.prisma.colaborador.update({
+      where: { id },
+      data: {
+        ...data,
+        projetos: {
+          connect: projetos,
+        },
+      },
+      include: {
+        projetos: true,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} colaborador`;
+  async removeOneColaborador(
+    where: Prisma.ColaboradorWhereUniqueInput,
+  ): Promise<Colaborador> {
+    return this.prisma.colaborador.delete({ where });
   }
 }

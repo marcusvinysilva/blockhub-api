@@ -25,6 +25,6 @@ model Colaborador {
   nome     String
   cargo    String
   admissao String
-  ativo    Boolean
+  ativo    Boolean?
   projetos Projeto[]
 }

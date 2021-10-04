@@ -3,42 +3,55 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  ValidationPipe,
+  UsePipes,
+  ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { ColaboradoresService } from './colaboradores.service';
+import { Colaborador } from '.prisma/client';
 import { CreateColaboradorDto } from './dto/create-colaborador.dto';
 
 @Controller('colaboradores')
 export class ColaboradoresController {
-  constructor(private readonly colaboradoresService: ColaboradoresService) {}
+  constructor(private colaboradoresService: ColaboradoresService) {}
 
-  @Post()
-  create(@Body() createColaboradoreDto: CreateColaboradorDto) {
-    return this.colaboradoresService.create(createColaboradoreDto);
+  @Post('/create')
+  @UsePipes(ValidationPipe)
+  async create(
+    @Body() createColaborador: CreateColaboradorDto,
+  ): Promise<Colaborador> {
+    return this.colaboradoresService.createColaborador(createColaborador);
   }
 
   @Get()
-  findAll() {
-    return this.colaboradoresService.findAll();
+  @UsePipes(ValidationPipe)
+  async findAll(): Promise<Colaborador[]> {
+    return this.colaboradoresService.findAllColaboradores();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.colaboradoresService.findOne(+id);
+  @Get('/list/:id')
+  @UsePipes(ValidationPipe)
+  async findUnique(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Colaborador> {
+    return this.colaboradoresService.findOneColaborador(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateColaboradoreDto: CreateColaboradorDto,
-  ) {
-    return this.colaboradoresService.update(+id, updateColaboradoreDto);
+  @Put('/update/:id')
+  @UsePipes(ValidationPipe)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateColaborador: CreateColaboradorDto,
+  ): Promise<Colaborador> {
+    return this.colaboradoresService.updateColaborador(id, updateColaborador);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.colaboradoresService.remove(+id);
+  @Delete('/delete/:id')
+  @UsePipes(ValidationPipe)
+  async delete(@Param('id') id: string) {
+    return this.colaboradoresService.removeOneColaborador({ id: Number(id) });
   }
 }
