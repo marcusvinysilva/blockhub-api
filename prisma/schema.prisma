@@ -11,18 +11,20 @@ generator client {
 }
 
 model Projeto {
-  id        Int      @id @default(autoincrement())
-  nome      String   @unique
-  descricao String?
-  inicio    String
-  fim       String?
-  ativo     Boolean?
+  id            Int           @id @default(autoincrement())
+  nome          String        @unique
+  descricao     String?
+  inicio        String
+  fim           String?
+  ativo         Boolean?
+  colaboradores Colaborador[]
 }
 
 model Colaborador {
-  id       Int     @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   nome     String
   cargo    String
   admissao String
   ativo    Boolean
+  projetos Projeto[]
 }
