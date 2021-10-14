@@ -28,3 +28,9 @@ model Colaborador {
   ativo    Boolean?
   projetos Projeto[]
 }
+
+model Usuario {
+  id    Int    @id @default(autoincrement())
+  login String @unique
+  senha String
+}
