@@ -17,4 +17,5 @@ export class LoginDto {
 export class AuthResponse {
   token: string;
   usuario: Usuario;
+  message: string;
 }

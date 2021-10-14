@@ -7,8 +7,9 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
-import { AuthResponse, LoginDto } from './auth.dto';
+import { AuthResponse, LoginDto } from './dtos/auth.dto';
 import { AuthService } from './auth.service';
+import { ReturnCreateUserDto } from './dtos/return-usuario.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,8 +18,9 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   @ApiBody({ type: LoginDto })
   @Post('create')
-  async createUser(@Body() data: LoginDto): Promise<Usuario> {
-    return this.service.createUsuario(data);
+  async createUser(@Body() data: LoginDto): Promise<ReturnCreateUserDto> {
+    await this.service.createUsuario(data);
+    return { message: 'Usuário criado com sucesso' };
   }
 
   @UsePipes(ValidationPipe)

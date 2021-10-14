@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthResponse, LoginDto } from './auth.dto';
+import { AuthResponse, LoginDto } from './dtos/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { Usuario } from '.prisma/client';
 
@@ -56,6 +56,7 @@ export class AuthService {
     return {
       token: this.jwt.sign({ login }),
       usuario,
+      message: 'Login feito com sucesso',
     };
   }
 }
