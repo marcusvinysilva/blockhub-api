@@ -13,12 +13,14 @@ import {
 import { ProjetosService } from './projetos.service';
 import { Projeto } from '.prisma/client';
 import { CreateProjetoDto } from './dto/create-projeto.dto';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('projetos')
 export class ProjetosController {
   constructor(private projetosService: ProjetosService) {}
 
   @Post('/create')
+  @ApiBody({ type: CreateProjetoDto })
   @UsePipes(ValidationPipe)
   async create(@Body() createProjeto: CreateProjetoDto): Promise<Projeto> {
     return this.projetosService.createProjeto(createProjeto);
@@ -37,6 +39,7 @@ export class ProjetosController {
   }
 
   @Put('/update/:id')
+  @ApiBody({ type: CreateProjetoDto })
   @UsePipes(ValidationPipe)
   async update(
     @Param('id', ParseIntPipe) id: number,

@@ -13,12 +13,14 @@ import {
 import { ColaboradoresService } from './colaboradores.service';
 import { Colaborador } from '.prisma/client';
 import { CreateColaboradorDto } from './dto/create-colaborador.dto';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('colaboradores')
 export class ColaboradoresController {
   constructor(private colaboradoresService: ColaboradoresService) {}
 
   @Post('/create')
+  @ApiBody({ type: CreateColaboradorDto })
   @UsePipes(ValidationPipe)
   async create(
     @Body() createColaborador: CreateColaboradorDto,
@@ -41,6 +43,7 @@ export class ColaboradoresController {
   }
 
   @Put('/update/:id')
+  @ApiBody({ type: CreateColaboradorDto })
   @UsePipes(ValidationPipe)
   async update(
     @Param('id', ParseIntPipe) id: number,
